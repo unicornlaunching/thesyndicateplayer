@@ -12,38 +12,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     playBtn.addEventListener('click', function() {
         if (audio.paused) {
-            audio.play().then(() => {
-                playBtn.textContent = 'Pause';
-                console.log('Audio is playing');
-                if (!audioContext) {
-                    initAudioContext();
-                }
-            }).catch(error => {
-                console.error('Error playing audio:', error);
-            });
+            audio.play();
+            playBtn.textContent = 'Pause';
+            if (!audioContext) {
+                initAudioContext();
+            }
         } else {
             audio.pause();
             playBtn.textContent = 'Play';
-            console.log('Audio is paused');
         }
     });
 
     function initAudioContext() {
-        try {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioContext.createAnalyser();
-            source = audioContext.createMediaElementSource(audio);
-            source.connect(analyser);
-            analyser.connect(audioContext.destination);
-            analyser.fftSize = 256;
-            bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        source = audioContext.createMediaElementSource(audio);
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 256;
+        bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
 
-            console.log('Audio context initialized');
-            drawVisualizer();
-        } catch (error) {
-            console.error('Error initializing audio context:', error);
-        }
+        drawVisualizer();
     }
 
     function drawVisualizer() {
